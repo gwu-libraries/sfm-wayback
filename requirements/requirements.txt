@@ -1,1 +1,33 @@
--r common.txt
+amqp==1.4.9
+anyjson==0.3.3
+argh==0.26.2
+brotlipy==0.3.0
+cffi==1.7.0
+chardet==2.3.0
+et-xmlfile==1.0.1
+idna==2.1
+iso8601==0.1.11
+jdcal==1.2
+Jinja2==2.8
+kombu==3.0.35
+librabbitmq==1.6.1
+MarkupSafe==0.23
+meld3==1.0.2
+openpyxl==2.3.5
+pathtools==0.1.2
+petl==1.1.0
+pycparser==2.14
+PyYAML==3.11
+redis==2.10.5
+requests==2.10.0
+requests-file==1.4
+six==1.10.0
+supervisor==3.3.0
+surt==0.3.0
+tldextract==2.0.1
+urllib3==1.16
+warc==0.2.1
+watchdog==0.8.3
+webencodings==0.5
+-e git+https://github.com/gwu-libraries/pywb.git@master#egg=pywb
+-e git+https://github.com/gwu-libraries/sfm-utils.git@master#egg=sfmutils
