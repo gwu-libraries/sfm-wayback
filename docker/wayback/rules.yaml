@@ -1,0 +1,343 @@
+rules:
+    # flickr api rules
+    #=================================================================
+    - url_prefix: 'com,flickr,api)/services/rest'
+
+      fuzzy_lookup:
+          - method
+#          - photo_id
+#          - username
+          - user_id
+#          - page
+
+    - url_prefix: 'com,flickr,api)/services/rest'
+
+      fuzzy_lookup:
+          - method
+          - photo_id
+#          - username
+#          - user_id
+#          - page
+
+
+    # twitter api rules
+    #=================================================================
+    - url_prefix: 'com,twitter,api)/1.1'
+
+      rewrite:
+        js_rewrite_location: all
+
+
+    # twitter rules
+    #=================================================================
+    - url_prefix: 'com,twitter)/i/profiles/show/'
+
+      fuzzy_lookup: '/profiles/show/.*with_replies\?.*(max_id=[^&]+)'
+
+
+    # facebook rules
+    #=================================================================
+    - url_prefix: 'com,facebook)/ajax/pagelet/generic.php/'
+
+      fuzzy_lookup: 'com,facebook\)/.*[?&]data=(.*?(?:[&]|query_type[^,]+))'
+
+    - url_prefix: 'com,facebook)/ajax/ufi/'
+
+      fuzzy_lookup:
+          - ft_ent_identifier
+          - lsd
+
+    - url_prefix: 'com,facebook)/ajax/chat/hovercard/sidebar.php'
+
+      fuzzy_lookup:
+          - ids[0]
+
+    - url_prefix: 'com,facebook)/login.php'
+
+      fuzzy_lookup:
+          - email
+          - lgnrnd
+          - lsd
+
+    - url_prefix: 'com,facebook)/ajax/timezone/update.php'
+
+      fuzzy_lookup:
+          - __user
+
+    # fallback for all /ajax/
+    - url_prefix: 'com,facebook)/ajax/'
+
+      fuzzy_lookup: '([?&][^_]\w+=[^&]+)+'
+
+    - url_prefix: 'com,facebook)/'
+      rewrite:
+        js_regexs:
+            - match: 'Bootloader\.configurePage.*?;'
+              replace: '/* {0} */'
+
+        parse_comments: true
+
+    - url_prefix: 'com,facebook'
+      rewrite:
+          cookie_scope: root
+
+
+    # fastly
+    #=================================================================
+    - url_prefix: ['net,fastly,']
+
+      fuzzy_lookup: '()'
+
+
+    # instagram rules
+    #=================================================================
+    - url_prefix: 'net,cloudfront,'
+
+      rewrite:
+          js_regexs:
+              - match: '\burl\((//[^)]+)\)'
+                rewrite: true
+                group: 1
+
+    - url_prefix: 'com,instagram)/p/'
+
+      fuzzy_lookup: '()'
+
+
+    # blogspot rules
+    #=================================================================
+    - url_prefix: ['com,blogspot,']
+
+      fuzzy_lookup:
+        match:
+            - path
+            - action
+            - widgettype
+
+        replace: '.com/'
+
+
+    # flickr rules
+    #=================================================================
+    - url_prefix: ['com,yimg,l)/g/combo', 'com,yimg,s)/pw/combo', 'com,yahooapis,yui)/combo']
+      fuzzy_lookup: '([^/]+(?:\.css|\.js))'
+
+
+    - url_prefix: 'com,staticflickr,'
+
+      fuzzy_lookup:
+        match: '([0-9]+_[a-z0-9]+).*?.jpg'
+        replace: '/'
+
+
+    # google plus rules
+    #=================================================================
+
+    - url_prefix: 'com,google,plus)/_/stream/getactivities'
+
+    #      fuzzy_lookup: '(egk[^"]+)?.*(f.sid=[^&]+)'
+      fuzzy_lookup: 'f.req=.*\]\]\]\,\"([^"]+).*(f.sid=[^&]+)'
+
+    - url_prefix: 'com,google,plus)/_/stream/squarestream'
+
+      #fuzzy_lookup: '(cai[^"]+).*(f.sid=[^&]+)'
+      fuzzy_lookup: 'f.req=.*?\"([^"]+).*(f.sid=[^&]+)'
+
+    - url_prefix: 'com,google,plus)/_/communities/rt/landing'
+
+      fuzzy_lookup: 'com,google,plus\)/_/.*?.*\,(\d{13}\])&.*(f.sid=[^&]+).*'
+
+
+    - url_prefix: 'com,google,plus)/_/'
+
+      fuzzy_lookup: 'com,google,plus\)/_/.*?.*(f.sid=[^&]+)'
+
+
+    # vimeo rules
+    #=================================================================
+
+    - url_prefix: 'com,vimeo,av)/'
+
+      # only use non query part of url, ignore query
+      fuzzy_lookup: '()'
+
+    - url_prefix: 'com,vimeocdn,'
+
+      fuzzy_lookup: '()'
+
+    - url_prefix: 'metadata)/player.vimeo.com/'
+
+      fuzzy_lookup:
+          match: '()'
+          replace: '&'
+
+    - url_prefix: 'com,vimeo,player)/log/'
+
+      fuzzy_lookup:
+          - id
+          - ownerId
+          - videoFileId
+          - signature
+
+    # vine
+    - url_prefix: 'co,vine,cdn,'
+
+      fuzzy_lookup:
+        replace: 'videos'
+        match: 'videos(?:_[^/]+)?/([^?]+)'
+
+
+    - url_prefix: 'com,disqus)/embed/comments'
+
+      fuzzy_lookup:
+          - base
+          - version
+          - t_i
+
+
+
+    # youtube rules
+    #=================================================================
+
+    - url_prefix: ['com,youtube)/get_video_info', 'com,youtube-nocookie)/get_video_info']
+
+      fuzzy_lookup:
+          - video_id
+          - html5
+
+    - url_prefix: 'com,youtube,s)/api/stats/qoe'
+
+      fuzzy_lookup:
+          - docid
+
+    - url_prefix: 'com,youtube,s)/api/stats/watch'
+
+      fuzzy_lookup:
+          - docid
+
+    - url_prefix: 'com,youtube,c'
+
+      fuzzy_lookup:
+          match:
+            regex: 'com,youtube,c.*/videogoodput.*'
+            args:
+                - id
+
+    # yt comments POST
+    - url_prefix: 'com,youtube)/watch_fragments_ajax'
+
+      fuzzy_lookup:
+        - v
+        - frags
+
+    - url_prefix: 'com,youtube)/comment_ajax'
+
+      fuzzy_lookup:
+        - video_id
+        - page_token
+        - action_load_comments
+        - filter
+
+
+    - url_prefix: 'com,googlevideo,'
+
+      fuzzy_lookup:
+          match:
+            regex: 'com,googlevideo.*/videoplayback.*'
+            args:
+                - id
+                - itag
+                  #- mime
+
+          filter:
+              - '~urlkey:{0}'
+              - '!mimetype:text/plain'
+
+          type: 'domain'
+
+    # comments support
+    - url_prefix: 'com,googleapis,plus)/u/0/_/widget/render/comments'
+
+      rewrite:
+        js_rewrite_location: location
+
+      fuzzy_lookup:
+          - href
+          - stream_id
+          - substream_id
+
+    - url_prefix: 'com,ytimg,s)/yts/jsbin/html5player-new'
+
+      rewrite:
+        js_regexs:
+            - match: '\"0\"\=\=c\.dash'
+              replace: 'c.dash="0";c.dashmpd="";{0}'
+
+    # watch and embed config changes
+    - url_prefix: ['com,youtube)/', 'com,youtube-nocookie)/']
+
+      rewrite:
+        js_regexs:
+            - match: 'ytplayer.load\(\);'
+              replace: 'ytplayer.config.args.dash = "0"; ytplayer.config.args.dashmpd = ""; {0}'
+
+            - match: 'yt\.setConfig.*PLAYER_CONFIG.*args":\s*{'
+              replace: '{0} "dash": "0", dashmpd: "", '
+
+        req_cookie_rewrite:
+            - match: '^(((?!PREF).)*)$'
+              replace: '\1; PREF=f2=40000000'
+
+            - match: '(.*PREF=)([^ ;]*)(.*)'
+              replace: '\1&f2=40000000\3'
+
+    # testing rules -- not for valid domain
+    #=================================================================
+    # this rule block is a non-existent prefix merely for testing
+
+    - url_prefix: 'example,example,test,all)/'
+
+      rewrite:
+        js_rewrite_location: all
+
+    - url_prefix: 'example,example,test,loconly)/'
+
+      rewrite:
+        js_rewrite_location: location
+
+    - url_prefix: 'example,example,test,norewrite)/'
+
+      rewrite:
+        js_rewrite_location: none
+
+    - url_prefix: 'example,example,test)/'
+
+      canonicalize:
+        match: '(example,example,test\)/.*?)[?].*?(id=value).*'
+        replace: '\1?\2'
+
+      fuzzy_lookup:
+          - param1
+          - id
+
+      rewrite:
+        js_rewrite_location: urls
+
+        req_cookie_rewrite:
+            - match: '^(((?!FOO).)*)$'
+              replace: '\1; FOO=bar=1'
+
+            - match: '(.*FOO=)([^ ;]*)(.*)'
+              replace: '\1&bar=1\3'
+
+            - match: ''
+              invalid_: ''
+
+      # all domain rules -- fallback to this dataset
+    #=================================================================
+    # Applies to all urls -- should be last
+    - url_prefix: ''
+      fuzzy_lookup:
+        match: '(.*)[&?](?:_|uncache)=[\d]+[&]?'
+        filter: ['=urlkey:{0}']
+        replace: '?'

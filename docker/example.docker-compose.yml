@@ -1,0 +1,102 @@
+version: "2"
+services:
+    sfmdb:
+        image: gwul/sfm-ui-db:master
+        environment:
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            - TZ=${TZ}
+        volumes_from:
+            - sfmdata
+    sfmuiapp:
+        image: gwul/sfm-ui:master
+        ports:
+            - "8080:80"
+        links:
+            - sfmdb:db
+            - sfmrabbit:mq
+        environment:
+            - SFM_DEBUG=True
+            - SFM_APSCHEDULER_LOG=DEBUG
+            - SFM_UI_LOG=DEBUG
+            - SFM_FIVE_MINUTE_SCHEDULE=True
+            - TZ=${TZ}
+            - SFM_HOST=localhost:8080
+            - MQ_ENV_RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+            - MQ_ENV_RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+            - DB_ENV_POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        volumes_from:
+            - sfmdata:ro
+    sfmrabbit:
+        image: rabbitmq@sha256:397382d2b222f3a298a6c74e93f348fb16f9a7fde2c02ba14122624d852daae3
+        #RabbitMQ 3-management
+        ports:
+            - "15672:15672"
+        restart: always
+        environment:
+            - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+            - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+            - TZ=${TZ}
+    sfmdata:
+        image: ubuntu:14.04
+        command: /bin/true
+        volumes:
+             - /sfm-data
+        environment:
+            - TZ=${TZ}
+    sfmheritrix:
+        image:  gwul/sfm-heritrix:master
+        ports:
+            - "8443:8443"
+        environment:
+            - HERITRIX_USER=${HERITRIX_USER}
+            - HERITRIX_PASSWORD=${HERITRIX_PASSWORD}
+        volumes_from:
+            - sfmdata
+    sfmwebharvester:
+        image: gwul/sfm-web-harvester:master
+        links:
+            - sfmrabbit:mq
+            - sfmheritrix:heritrix
+        environment:
+            - DEBUG=True
+            - HERITRIX_CONTACT_URL=http://library.gwu.edu
+            - MQ_ENV_RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+            - MQ_ENV_RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+            - HERITRIX_ENV_HERITRIX_USER=${HERITRIX_USER}
+            - HERITRIX_ENV_HERITRIX_PASSWORD=${HERITRIX_PASSWORD}
+        volumes_from:
+            - sfmdata
+    sfmtwitterrestharvester:
+        image: gwul/sfm-twitter-rest-harvester:master
+        links:
+            - sfmrabbit:mq
+        environment:
+            - TZ=${TZ}
+            - DEBUG=True
+            - MQ_ENV_RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+            - MQ_ENV_RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+        volumes_from:
+            - sfmdata
+    sfmwayback:
+        build:
+            context: ../../sfm-wayback/docker/wayback
+        ports:
+          - "8081:8080"
+        volumes_from:
+          - sfmdata
+        depends_on:
+          - sfmwaybackindexer
+    sfmwaybackindexer:
+        build:
+            context: ../../sfm-wayback/docker/dev
+        links:
+            - sfmrabbit:mq
+        volumes_from:
+          - sfmdata
+        volumes:
+            - "..:/opt/sfm-wayback"
+        environment:
+          - TZ=${TZ}
+          - DEBUG=True
+          - MQ_ENV_RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+          - MQ_ENV_RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
