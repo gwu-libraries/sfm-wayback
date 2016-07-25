@@ -100,3 +100,10 @@ services:
           - DEBUG=True
           - MQ_ENV_RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
           - MQ_ENV_RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+#    sfmwaybackviewer:
+#        build:
+#            context: ../../sfm-wayback-viewer/docker/dev
+#        volumes:
+#            - "../../sfm-wayback-viewer:/opt/sfm-wayback-viewer"
+#        ports:
+#          - "8000:8000"

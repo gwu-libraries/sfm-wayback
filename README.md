@@ -5,7 +5,7 @@ In particular, it plugs into the [Social Feed Manager](go.gwu.edu/sfm) (SFM) inf
 (an implementation of wayback software for web archives) to serve social media data and related web resources recorded 
 in WARC files by SFM harvesters.
 
-sfm-wayback can be used on conjunction with [sfm-wayback-viewer](https://github.com/gwu-libraries/sfm-wayback), 
+sfm-wayback can be used on conjunction with [sfm-wayback-viewer](https://github.com/gwu-libraries/sfm-wayback-viewer), 
 an experimental web application which uses the data served by PyWB and provides a rendering of the social media data 
 (which is in JSON).
 
