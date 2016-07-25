@@ -18,11 +18,11 @@ created messages published by SFM harvesters and indexes the WARC files in PyWB.
 3. Bring up SFM with `docker-compose up -d`. This will take a few minutes.
 4. Collect some social media data and related web resources. For more information on using SFM see the [user
 guide](http://sfm.readthedocs.io/en/latest/quickstart.html).  SFM UI will be available at 
-[http://<your server>:8080/ui/](http://localhost:8080/ui/).
+[http://your_server:8080/ui/](http://localhost:8080/ui/).
 
-The PyWB search page will be available at [http://<your server>:8081/sfm](http://localhost:8081/sfm).
+The PyWB search page will be available at [http://your_server:8081/sfm](http://localhost:8081/sfm).
 As an example, to get a list of the archived Twitter REST API calls go to 
-[http://<your server>:8081/sfm/*/https://api.twitter.com/1.1/*](http://localhost:8081/sfm/*/https://api.twitter.com/1.1/*).
+[http://your_server:8081/sfm/*/https://api.twitter.com/1.1/*](http://localhost:8081/sfm/*/https://api.twitter.com/1.1/*).
 
 For more information on installing SFM, see the [installation and configuration](http://sfm.readthedocs.io/en/latest/install.html) docs.
 
