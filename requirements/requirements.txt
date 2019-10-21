@@ -25,7 +25,7 @@ six==1.10.0
 supervisor==3.3.0
 surt==0.3.0
 tldextract==2.0.1
-urllib3==1.16
+urllib3==1.24.2
 warc==0.2.1
 watchdog==0.8.3
 webencodings==0.5
