@@ -15,7 +15,7 @@ MarkupSafe==0.23
 meld3==1.0.2
 openpyxl==2.3.5
 pathtools==0.1.2
-petl==1.1.0
+petl==1.6.8
 pycparser==2.14
 PyYAML==3.11
 redis==2.10.5
