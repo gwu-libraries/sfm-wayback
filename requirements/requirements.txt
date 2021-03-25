@@ -17,7 +17,7 @@ openpyxl==2.3.5
 pathtools==0.1.2
 petl==1.1.0
 pycparser==2.14
-PyYAML==3.11
+PyYAML==5.4
 redis==2.10.5
 requests==2.10.0
 requests-file==1.4
