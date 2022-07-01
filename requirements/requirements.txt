@@ -22,7 +22,7 @@ redis==2.10.5
 requests==2.10.0
 requests-file==1.4
 six==1.10.0
-supervisor==3.3.0
+supervisor==3.3.3
 surt==0.3.0
 tldextract==2.0.1
 urllib3==1.16
